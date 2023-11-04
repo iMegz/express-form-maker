@@ -7,6 +7,7 @@ const cors = require("cors");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const mgmtTokenMiddleware = require("./middlewares/mgmtTokenMiddleware");
 const routes = require("./src/routes");
+const db = require("./src/config/db");
 
 // Managment API token for development
 if (process.env.NODE_ENV !== "production") {
@@ -46,4 +47,6 @@ app.use(errorMiddleware);
 
 // Start app
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+db(() => {
+    app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+});
