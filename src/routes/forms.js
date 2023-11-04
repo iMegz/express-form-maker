@@ -1,6 +1,5 @@
-const authUserMiddleware = require("../../middlewares/authUserMiddleware");
+const authUserMiddleware = require("../middlewares/authUserMiddleware");
 const { addNewForm, getAllForms, deleteForm } = require("../controllers/forms");
-const Form = require("../models/Form");
 
 const router = require("express").Router();
 

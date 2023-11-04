@@ -1,4 +1,4 @@
-const parseJWT = require("../src/utils/parseJWT");
+const parseJWT = require("../utils/parseJWT");
 
 const axios = require("axios").default;
 

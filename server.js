@@ -4,8 +4,8 @@ const express = require("express");
 const cors = require("cors");
 
 // Middlewares
-const errorMiddleware = require("./middlewares/errorMiddleware");
-const mgmtTokenMiddleware = require("./middlewares/mgmtTokenMiddleware");
+const errorMiddleware = require("./src/middlewares/errorMiddleware");
+const mgmtTokenMiddleware = require("./src/middlewares/mgmtTokenMiddleware");
 const routes = require("./src/routes");
 const db = require("./src/config/db");
 
