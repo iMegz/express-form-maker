@@ -4,6 +4,7 @@ const {
     getAllForms,
     deleteForm,
     getFormById,
+    editForm,
 } = require("../controllers/forms");
 
 const router = require("express").Router();
@@ -16,6 +17,8 @@ router.get("/get/all", authUserMiddleware, getAllForms);
 router.get("/get/:id", authUserMiddleware, getFormById); // For editing
 
 router.post("/new", authUserMiddleware, addNewForm);
+
+router.patch("/edit/:id", authUserMiddleware, editForm);
 
 router.delete("/del/:id", authUserMiddleware, deleteForm);
 

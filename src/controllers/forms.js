@@ -57,6 +57,41 @@ exports.addNewForm = async (req, res, next) => {
     }
 };
 
+// PATCH
+exports.editForm = async (req, res, next) => {
+    const id = req.params.id;
+    const by = req.auth.payload.sub;
+    const body = req.body;
+
+    // Invalid Id
+    if (!isObjectIdOrHexString(id)) {
+        const e = new Error("Invalid Id");
+        e.status = 400;
+        throw e;
+    }
+
+    // Get form
+    const form = await Form.findById(id);
+
+    // Form not found
+    if (!form) {
+        const err = new Error("Form not found");
+        err.status = 404;
+        throw err;
+    }
+
+    // Unauthorized
+    if (form.by !== by) {
+        const err = new Error("User not authorized to edit this form");
+        err.status = 403;
+        throw err;
+    }
+
+    // Update the form
+    await Form.updateOne({ _id: id }, { $set: body });
+    res.status(200).json({ message: `${form.title} was updated` });
+};
+
 // DELETE
 exports.deleteForm = async (req, res, next) => {
     try {
