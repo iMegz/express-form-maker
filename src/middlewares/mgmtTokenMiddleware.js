@@ -18,6 +18,7 @@ module.exports = async (req, res, next) => {
             );
             global.token = response.data.access_token;
             console.log(`New token acquired in ${new Date().toLocaleString()}`);
+            console.log(`DEV_MGMT_TOKEN=${global.token}`); // For development only
         }
         next();
     } catch (error) {
