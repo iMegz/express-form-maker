@@ -1,3 +1,4 @@
+const router = require("express").Router();
 const authUserMiddleware = require("../middlewares/authUserMiddleware");
 const {
     addNewForm,
@@ -6,8 +7,6 @@ const {
     getFormById,
     editForm,
 } = require("../controllers/forms");
-
-const router = require("express").Router();
 
 // Unauth routes
 router.get("/unauth/get/:id", getFormById); // For submiting applications

@@ -1,14 +1,5 @@
 const { Schema, model } = require("mongoose");
-
-const questionTypeEnum = [
-    "SHORT_ANSWER",
-    "PARAGRAPH",
-    "DROPDOWN",
-    "MCQ",
-    "EMAIL",
-    "NUMBER",
-    "DATE",
-];
+const questionTypeEnum = require("../utils/questionTypeEnum");
 
 function transform(doc, ret) {
     ret.id = ret._id;
