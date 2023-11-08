@@ -1,12 +1,6 @@
 const { Schema, model } = require("mongoose");
 const questionTypeEnum = require("../utils/questionTypeEnum");
-
-function transform(doc, ret) {
-    ret.id = ret._id;
-    delete ret._id;
-    delete ret.__v;
-    return ret;
-}
+const transform = require("../utils/transform");
 
 // Question schema
 const questionSchema = new Schema(
