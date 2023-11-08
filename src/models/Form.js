@@ -34,7 +34,7 @@ const formSchema = new Schema(
         title: { type: String, required: true },
         description: { type: String, default: "" },
         isPublic: { type: Boolean, default: false },
-        coverImg: String,
+        // coverImg: String,
         sections: [sectionSchema],
     },
     { toJSON: { transform } }
