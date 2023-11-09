@@ -15,7 +15,7 @@ exports.getResponses = async (req, res, next) => {
     }
 
     // Get form
-    const form = await Form.findById(id, { by: true });
+    const form = await Form.findById(id);
 
     // Form not found
     if (!form) {
@@ -31,9 +31,30 @@ exports.getResponses = async (req, res, next) => {
         throw err;
     }
 
-    const responses = await Response.find({ form: id });
+    const responses = await Response.find({ form: id }, "-form");
+    const result = {
+        form: form.title,
+        responses: responses.map((response) => {
+            const mapped = response.toJSON();
+            mapped.sections = mapped.sections.map((section, sIndex) => {
+                const questions = section.questions.map((question, qIndex) => {
+                    return {
+                        ...question,
+                        title: form.sections[sIndex].questions[qIndex].question,
+                    };
+                });
+                const newSection = {
+                    ...section,
+                    questions,
+                    title: form.sections[sIndex].title,
+                };
+                return newSection;
+            });
+            return mapped;
+        }),
+    };
 
-    res.status(200).json(responses);
+    res.status(200).json(result);
 };
 
 exports.getResponseById = async (req, res, next) => {
