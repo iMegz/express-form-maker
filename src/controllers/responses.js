@@ -7,61 +7,68 @@ exports.getResponses = async (req, res, next) => {
     const id = req.params.formId;
     const by = req.auth.payload.sub;
 
-    // Invalid Id
-    if (!isObjectIdOrHexString(id)) {
-        const e = new Error("Invalid Id");
-        e.status = 400;
-        throw e;
-    }
+    try {
+        // Invalid Id
+        if (!isObjectIdOrHexString(id)) {
+            const e = new Error("Invalid Id");
+            e.status = 400;
+            throw e;
+        }
 
-    // Get form
-    const form = await Form.findById(id);
+        // Get form
+        const form = await Form.findById(id);
 
-    // Form not found
-    if (!form) {
-        const err = new Error("Form not found");
-        err.status = 404;
-        throw err;
-    }
+        // Form not found
+        if (!form) {
+            const err = new Error("Form not found");
+            err.status = 404;
+            throw err;
+        }
 
-    // Trying to access forms of another user
-    if (form.by !== by) {
-        const err = new Error("Forbidden");
-        err.status = 403;
-        throw err;
-    }
+        // Trying to access forms of another user
+        if (form.by !== by) {
+            const err = new Error("Forbidden");
+            err.status = 403;
+            throw err;
+        }
 
-    const responses = await Response.find({ form: id }, "-form");
-    const result = {
-        form: form.title,
-        responses: responses.map((response) => {
-            const mapped = response.toJSON();
-            mapped.sections = mapped.sections.map((section, sIndex) => {
-                const questions = section.questions.map((question, qIndex) => {
-                    return {
-                        ...question,
-                        title: form.sections[sIndex].questions[qIndex].question,
+        const responses = await Response.find({ form: id }, "-form");
+        const result = {
+            form: form.title,
+            responses: responses.map((response) => {
+                const mapped = response.toJSON();
+                mapped.sections = mapped.sections.map((section, sIndex) => {
+                    const questions = section.questions.map(
+                        (question, qIndex) => {
+                            return {
+                                ...question,
+                                title: form.sections[sIndex].questions[qIndex]
+                                    .question,
+                            };
+                        }
+                    );
+                    const newSection = {
+                        ...section,
+                        questions,
+                        title: form.sections[sIndex].title,
                     };
+                    return newSection;
                 });
-                const newSection = {
-                    ...section,
-                    questions,
-                    title: form.sections[sIndex].title,
-                };
-                return newSection;
-            });
-            return mapped;
-        }),
-    };
+                return mapped;
+            }),
+        };
 
-    res.status(200).json(result);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
 };
 
 exports.getResponseById = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        const by = req.auth.payload.sub;
+    const id = req.params.id;
+    const by = req.auth.payload.sub;
 
+    try {
         // Invalid Id
         if (!isObjectIdOrHexString(id)) {
             const e = new Error("Invalid Id");
@@ -96,7 +103,23 @@ exports.getResponseById = async (req, res, next) => {
             throw err;
         }
 
-        res.status(200).json(response);
+        const mapped = response.toJSON();
+        mapped.sections = mapped.sections.map((section, sIndex) => {
+            const questions = section.questions.map((question, qIndex) => {
+                return {
+                    ...question,
+                    title: form.sections[sIndex].questions[qIndex].question,
+                };
+            });
+            const newSection = {
+                ...section,
+                questions,
+                title: form.sections[sIndex].title,
+            };
+            return newSection;
+        });
+
+        res.status(200).json(mapped);
     } catch (error) {
         next(error);
     }
@@ -105,6 +128,7 @@ exports.getResponseById = async (req, res, next) => {
 // POST
 exports.addNewResponse = async (req, res, next) => {
     const data = req.body;
+
     try {
         const response = new Response(data);
         const result = await response.save();
@@ -116,10 +140,10 @@ exports.addNewResponse = async (req, res, next) => {
 
 // DELETE
 exports.deleteResponse = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        const by = req.auth.payload.sub;
+    const id = req.params.id;
+    const by = req.auth.payload.sub;
 
+    try {
         // Invalid Id
         if (!isObjectIdOrHexString(id)) {
             const e = new Error("Invalid Id");

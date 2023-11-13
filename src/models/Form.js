@@ -9,10 +9,15 @@ const questionSchema = new Schema(
         type: { type: String, required: true, enum: questionTypeEnum },
         question: { type: String, required: true },
         required: { type: Boolean, default: false },
-        dateType: { type: String, enum: ["date", "time", "datetime-local"] },
-        choices: { type: [String], default: undefined },
-        other: Boolean,
-        maxChoices: Number,
+        extra: {
+            dateType: {
+                type: String,
+                enum: ["date", "time", "datetime-local"],
+            },
+            choices: { type: [String], default: undefined },
+            other: { type: Boolean },
+            maxChoices: { type: Number },
+        },
     },
     { _id: false }
 );
