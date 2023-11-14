@@ -49,9 +49,18 @@ exports.getFormById = async (req, res, next) => {
 // POST
 exports.addNewForm = async (req, res, next) => {
     const data = req.body;
-    data.by = req.auth.payload.sub;
+    const by = req.auth.payload.sub;
+    data.by = by;
 
     try {
+        const formsCount = await Form.countDocuments({ by });
+
+        //  Change this to be dependent on user account type
+        if (formsCount > 2) {
+            const err = new Error("Max number of forms reached");
+            err.status = 403;
+            throw err;
+        }
         const form = new Form(data);
         const result = await form.save();
         res.status(201).json(result);
