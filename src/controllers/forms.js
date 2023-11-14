@@ -7,7 +7,7 @@ exports.getAllForms = async (req, res, next) => {
     const by = req.auth.payload.sub;
 
     try {
-        const forms = await Form.find({ by }, "_id title description");
+        const forms = await Form.find({ by }, "_id title description isPublic");
         res.status(200).json(forms);
     } catch (error) {
         next(error);
