@@ -2,12 +2,14 @@ if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const { join } = require("path");
 const express = require("express");
 const cors = require("cors");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Middlewares
 const errorMiddleware = require("./src/middlewares/errorMiddleware");
 const mgmtTokenMiddleware = require("./src/middlewares/mgmtTokenMiddleware");
 const routes = require("./src/routes");
 const db = require("./src/config/db");
+const stripeWebhookMiddleware = require("./src/middlewares/stripeWebhookMiddleware");
 
 // Managment API token for development
 if (process.env.NODE_ENV !== "production") {
@@ -16,6 +18,13 @@ if (process.env.NODE_ENV !== "production") {
 
 // Initialize express app
 const app = express();
+
+// Stripe webhook middleware
+app.post(
+    "/api/webhook",
+    express.raw({ type: "application/json" }),
+    stripeWebhookMiddleware
+);
 
 // Enable JSON parsing for incoming requests
 app.use(express.json());
@@ -31,11 +40,6 @@ app.use(mgmtTokenMiddleware);
 
 // Routes
 app.use("/api", routes);
-
-// Serve frontend react app
-app.get("/", (req, res) => {
-    res.status(200).send("Frontend");
-});
 
 // 404 Route
 app.use((req, res) => {
