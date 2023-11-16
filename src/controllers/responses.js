@@ -32,7 +32,7 @@ exports.getResponses = async (req, res, next) => {
             throw err;
         }
 
-        const responses = await Response.find({ form: id }, "-form");
+        const responses = await Response.find({ form: id });
         const result = {
             form: form.title,
             responses: responses.map((response) => {

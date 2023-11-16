@@ -7,12 +7,16 @@ exports.getForms = async (req, res, next) => {
     try {
         const forms = await Form.find({ by: id }, "_id");
         const formsIds = forms.map(({ id }) => id);
-        const responses = await Response.countDocuments({
-            form: { $in: formsIds },
-        });
+        let responses = 0;
+        if (formsIds.length) {
+            responses = await Response.countDocuments({
+                form: { $in: formsIds },
+            });
+        }
 
         const formsCount = forms.length;
         const stats = { forms: formsCount, responses };
+
         res.status(200).json(stats);
     } catch (error) {
         next(error);
