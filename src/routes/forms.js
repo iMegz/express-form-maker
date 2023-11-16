@@ -9,16 +9,16 @@ const {
 } = require("../controllers/forms");
 
 // Unauth routes
-router.get("/unauth/get/:id", getFormById); // For submiting applications
+router.get("/unauth/:id", getFormById); // For submiting applications
 
 // Auth routes
-router.get("/get/all", authUserMiddleware, getAllForms);
-router.get("/get/:id", authUserMiddleware, getFormById); // For editing
+router.get("/", authUserMiddleware, getAllForms);
+router.get("/:id", authUserMiddleware, getFormById); // For editing
 
-router.post("/new", authUserMiddleware, addNewForm);
+router.post("/", authUserMiddleware, addNewForm);
 
-router.patch("/edit/:id", authUserMiddleware, editForm);
+router.patch("/:id", authUserMiddleware, editForm);
 
-router.delete("/del/:id", authUserMiddleware, deleteForm);
+router.delete("/:id", authUserMiddleware, deleteForm);
 
 module.exports = router;

@@ -8,11 +8,11 @@ const authUserMiddleware = require("../middlewares/authUserMiddleware");
 
 const router = require("express").Router();
 
-router.get("/get/all/:formId", authUserMiddleware, getResponses);
-router.get("/get/:id", authUserMiddleware, getResponseById);
+router.get("/form/:formId", authUserMiddleware, getResponses);
+router.get("/:id", authUserMiddleware, getResponseById);
 
-router.post("/new", authUserMiddleware, addNewResponse);
+router.post("/", authUserMiddleware, addNewResponse);
 
-router.delete("/del/:id", authUserMiddleware, deleteResponse);
+router.delete("/:id", authUserMiddleware, deleteResponse);
 
 module.exports = router;
