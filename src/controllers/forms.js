@@ -1,6 +1,9 @@
 const { isObjectIdOrHexString } = require("mongoose");
 const Form = require("../models/Form");
 const Response = require("../models/Response");
+const Subscription = require("../models/Subscription");
+
+const MAX_FREE_FORMS = 5;
 
 // GET
 exports.getAllForms = async (req, res, next) => {
@@ -53,14 +56,20 @@ exports.addNewForm = async (req, res, next) => {
     data.by = by;
 
     try {
-        const formsCount = await Form.countDocuments({ by });
+        // Limit forms for free users
+        const formsCountQuery = Form.countDocuments({ by });
+        const subQuery = Subscription.findById(by);
+        const [formsCount, sub] = await Promise.all([
+            formsCountQuery,
+            subQuery,
+        ]);
 
-        //  Change this to be dependent on user account type
-        if (formsCount > 2) {
+        if (!sub && formsCount >= MAX_FREE_FORMS) {
             const err = new Error("Max number of forms reached");
             err.status = 403;
             throw err;
         }
+
         const form = new Form(data);
         const result = await form.save();
         res.status(201).json(result);

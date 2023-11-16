@@ -24,7 +24,7 @@ exports.getForms = async (req, res, next) => {
 };
 
 exports.getSub = async (req, res, next) => {
-    const id = req.auth.payload.sub;
+    const id = req.auth?.payload.sub || req.params.id;
     try {
         const premium = await Subscription.findById(id);
         const subscription = premium ? "Premium" : "Free";

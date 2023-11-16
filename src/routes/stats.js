@@ -6,6 +6,7 @@ const Response = require("../models/Response");
 const Subscription = require("../models/Subscription");
 
 router.get("/sub", authUserMiddleware, getSub);
+router.get("/sub/:id", getSub);
 
 router.get("/forms", authUserMiddleware, getForms);
 

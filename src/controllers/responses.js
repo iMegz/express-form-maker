@@ -125,6 +125,24 @@ exports.getResponseById = async (req, res, next) => {
     }
 };
 
+exports.getResponsesCount = async (req, res, next) => {
+    const form = req.params.formId;
+
+    try {
+        // Invalid Id
+        if (!isObjectIdOrHexString(form)) {
+            const e = new Error("Invalid Id");
+            e.status = 400;
+            throw e;
+        }
+
+        const responses = await Response.countDocuments({ form });
+        res.status(200).json({ responses });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // POST
 exports.addNewResponse = async (req, res, next) => {
     const data = req.body;
