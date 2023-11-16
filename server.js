@@ -25,6 +25,8 @@ if (process.env.NODE_ENV !== "production") {
 // Initialize express app
 const app = express();
 
+app.enable("trust proxy");
+
 // Stripe webhook middleware
 app.post(
     "/api/webhook",
@@ -52,6 +54,9 @@ app.use(express.static(join(__dirname, "public")));
 
 // Get managment API token
 app.use(mgmtTokenMiddleware);
+
+// Testing route
+app.get("/test", (req, res) => res.status(200).json({ status: "Success" }));
 
 // Routes
 app.use("/api", routes);
