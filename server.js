@@ -2,7 +2,13 @@ if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const { join } = require("path");
 const express = require("express");
 const cors = require("cors");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const compression = require("compression");
+const helmet = require("helmet").default;
+const RateLimit = require("express-rate-limit");
+const limiter = RateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 20,
+});
 
 // Middlewares
 const errorMiddleware = require("./src/middlewares/errorMiddleware");
@@ -31,6 +37,15 @@ app.use(express.json());
 
 // Handle CORS headers
 app.use(cors());
+
+// Compress all routes
+app.use(compression());
+
+// Additional security
+app.use(helmet());
+
+// Limit request rate
+app.use(limiter);
 
 // Serve static files located in the "public" directory.
 app.use(express.static(join(__dirname, "public")));

@@ -13,7 +13,7 @@ router.get("/form/:formId", authUserMiddleware, getResponses);
 router.get("/:id", authUserMiddleware, getResponseById);
 router.get("/count/:formId", getResponsesCount);
 
-router.post("/", authUserMiddleware, addNewResponse);
+router.post("/", addNewResponse);
 
 router.delete("/:id", authUserMiddleware, deleteResponse);
 
