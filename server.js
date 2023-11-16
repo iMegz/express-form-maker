@@ -48,7 +48,7 @@ app.use(compression());
 app.use(helmet());
 
 // Limit request rate
-app.use(limiter);
+// app.use(limiter);
 
 // Serve static files located in the "public" directory.
 app.use(express.static(join(__dirname, "public")));
@@ -63,7 +63,7 @@ app.get("/test", (req, res) => res.status(200).json({ status: "Success" }));
 app.use("/api", routes);
 
 app.use("*", (req, res) => {
-    res.sendFile("index.html", { root: path.join(__dirname, "public/") });
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // 404 Route
