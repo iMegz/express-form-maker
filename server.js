@@ -3,7 +3,7 @@ const { join } = require("path");
 const express = require("express");
 const cors = require("cors");
 const compression = require("compression");
-// const helmet = require("helmet").default;
+const helmet = require("helmet").default;
 const RateLimit = require("express-rate-limit");
 const limiter = RateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
@@ -16,6 +16,7 @@ const mgmtTokenMiddleware = require("./src/middlewares/mgmtTokenMiddleware");
 const routes = require("./src/routes");
 const db = require("./src/config/db");
 const stripeWebhookMiddleware = require("./src/middlewares/stripeWebhookMiddleware");
+const path = require("path");
 
 // Managment API token for development
 if (process.env.NODE_ENV !== "production") {
@@ -44,7 +45,7 @@ app.use(cors());
 app.use(compression());
 
 // Additional security
-// app.use(helmet());
+app.use(helmet());
 
 // Limit request rate
 app.use(limiter);
@@ -60,6 +61,10 @@ app.get("/test", (req, res) => res.status(200).json({ status: "Success" }));
 
 // Routes
 app.use("/api", routes);
+
+app.use("*", (req, res) => {
+    res.sendFile("index.html", { root: path.join(__dirname, "public/") });
+});
 
 // 404 Route
 app.use((req, res) => {
