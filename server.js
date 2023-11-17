@@ -3,7 +3,7 @@ const { join } = require("path");
 const express = require("express");
 const cors = require("cors");
 const compression = require("compression");
-const helmet = require("helmet");
+const helmet = require("helmet").default;
 const RateLimit = require("express-rate-limit");
 const limiter = RateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
@@ -45,7 +45,7 @@ app.use(cors());
 app.use(compression());
 
 // Additional security
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Limit request rate
 app.set("trust proxy", 1);
