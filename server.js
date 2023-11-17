@@ -7,7 +7,7 @@ const compression = require("compression");
 const RateLimit = require("express-rate-limit");
 const limiter = RateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 20,
+    max: 30,
 });
 
 // Middlewares
@@ -48,7 +48,7 @@ app.use(compression());
 // app.use(helmet());
 
 // Limit request rate
-// app.use(limiter);
+app.use(limiter);
 
 // Serve static files located in the "public" directory.
 app.use(express.static(join(__dirname, "public")));
